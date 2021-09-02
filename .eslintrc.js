@@ -23,5 +23,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'error',
+    'react/jsx-filename-extension': 'allow',
   },
 }

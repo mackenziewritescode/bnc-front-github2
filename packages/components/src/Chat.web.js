@@ -9,73 +9,63 @@ import {
   Button,
   TextInput,
 } from 'react-native'
-import * as msTeams from '@microsoft/teams-js'
+import io from 'socket.io-client'
+import { useForm, Controller } from 'react-hook-form'
 
 import { AppHeader } from './AppHeader'
-import { AppHeaderTeams } from './AppHeaderTeams'
-import { Chat } from './Chat'
 
-export function App() {
-  const [onTeams, setOnTeams] = useState(false)
+const socket = io('http://localhost:5000')
+
+export function Chat() {
+  const [message, setMessage] = useState('')
+  const [chat, setChat] = useState([])
+
+  const { control, handleSubmit, reset } = useForm()
+
+  const onSubmit = (data) => {
+    socket.emit('message', data.message)
+    reset({ message: '' })
+  }
 
   useEffect(() => {
-    msTeams.initialize(() => setOnTeams(true))
-  }, [])
+    socket.on('message', function (msg) {
+      setChat([...chat, msg])
+    })
+  }, [chat])
+
+  const renderedChat = chat.map((msg, index) => (
+    <View key={index} style={styles.chatMessage}>
+      <Text style={styles.chatText}>{msg}</Text>
+    </View>
+  ))
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-        >
-          {onTeams ? <AppHeaderTeams /> : <AppHeader />}
-          <View style={styles.body}>
-            <Chat />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <View style={styles.chatContainer}>
+      <View style={styles.renderedChat}>{renderedChat}</View>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+        name="message"
+        defaultValue=""
+      />
+      <Button title="Send Message" onPress={handleSubmit(onSubmit)} />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: 'white',
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
   body: {
     backgroundColor: 'white',
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: 'black',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: 'gray',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: 'gray',
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
   },
   chatContainer: {
     width: '70%',
@@ -96,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'azure',
   },
   chatMessage: {
-    // width: 'fit-content',
+    width: 'fit-content',
     maxWidth: '100%',
     backgroundColor: '#1bc2f5',
     paddingHorizontal: 8,

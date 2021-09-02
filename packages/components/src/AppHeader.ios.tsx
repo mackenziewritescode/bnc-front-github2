@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 export function AppHeader() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Browser App</Text>
+      <Text style={styles.text}>IOS App</Text>
     </View>
   )
 }
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: 200,
-    backgroundColor: '#b8eaff',
+    backgroundColor: '#ff8157',
   },
   text: {
     fontSize: 36,

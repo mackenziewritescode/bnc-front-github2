@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export function AppHeader() {
+export function AppHeaderTeams() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Browser App</Text>
+      <Text style={styles.text}>Teams App</Text>
     </View>
   )
 }
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: 200,
-    backgroundColor: '#b8eaff',
+    backgroundColor: '#9cffca',
   },
   text: {
     fontSize: 36,
