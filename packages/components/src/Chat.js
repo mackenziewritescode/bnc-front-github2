@@ -14,19 +14,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 import { AppHeader } from './AppHeader'
 
-// const socket = io('http://localhost:5000', {
-//   transports: ['websocket'],
-//   jsonp: false,
-// })
-
-const socket = io('http://localhost:5000', {
-  transports: ['websocket'],
-  jsonp: false,
-})
-socket.connect()
-socket.on('connect', () => {
-  console.log('connected to socket server')
-})
+const socket = io('http://localhost:5000')
 
 export function Chat() {
   const [message, setMessage] = useState('')
@@ -34,11 +22,14 @@ export function Chat() {
 
   const { control, handleSubmit, reset } = useForm()
 
-  useEffect(() => {}, [])
+  // const onSubmit = (data) => {
+  //   socket.emit('message', data.message)
+  //   reset({ message: '' })
+  // }
 
-  const onSubmit = (data) => {
-    socket.emit('message', data.message)
-    reset({ message: '' })
+  const submit = () => {
+    socket.emit('message', message)
+    setMessage('')
   }
 
   useEffect(() => {
@@ -55,8 +46,8 @@ export function Chat() {
 
   return (
     <View style={styles.chatContainer}>
-      <ScrollView style={styles.renderedChat}>{renderedChat}</ScrollView>
-      <Controller
+      <View style={styles.renderedChat}>{renderedChat}</View>
+      {/* <Controller
         control={control}
         rules={{
           required: true,
@@ -72,7 +63,14 @@ export function Chat() {
         name="message"
         defaultValue=""
       />
-      <Button title="Send Message" onPress={handleSubmit(onSubmit)} />
+      <Button title="Send Message" onPress={handleSubmit(onSubmit)} /> */}
+      <TextInput
+        style={styles.input}
+        autoCorrect={false}
+        value={message}
+        onSubmitEditing={() => submit()}
+        onChangeText={(message) => setMessage(message)}
+      />
     </View>
   )
 }

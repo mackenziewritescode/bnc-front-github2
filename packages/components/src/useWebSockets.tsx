@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import io, { Socket } from 'socket.io-client'
 
 type Props = {
-  userId: number
+  userId: string
   enabled: boolean
   onConnected?: () => void
 }
@@ -14,7 +14,7 @@ type Message = {
   date: Date
 }
 
-const useWebSockets = ({ userId, enabled, onConnected }: Props) => {
+export const useWebSockets = ({ userId, enabled }: Props) => {
   const ref = useRef<Socket>()
   const [messages, setMessages] = useState<Message[]>([])
 
@@ -32,7 +32,7 @@ const useWebSockets = ({ userId, enabled, onConnected }: Props) => {
 
     const socket = io('localhost:5000')
 
-    socket.emit('join', userId)
+    // socket.emit('join', userId)
 
     socket.emit('message', (msg: Message) => {
       setMessages((prev) => prev.concat(msg))
