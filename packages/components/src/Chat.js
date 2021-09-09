@@ -22,20 +22,19 @@ export function Chat() {
 
   const { control, handleSubmit, reset } = useForm()
 
-  // const onSubmit = (data) => {
-  //   socket.emit('message', data.message)
-  //   reset({ message: '' })
-  // }
-
-  const submit = () => {
-    socket.emit('message', message)
-    setMessage('')
+  const onSubmit = (data) => {
+    socket.emit('message', data.message)
+    reset({ message: '' })
   }
 
   useEffect(() => {
     socket.on('message', function (msg) {
       setChat([...chat, msg])
+      console.log(chat)
     })
+    return () => {
+      socket.disconnect()
+    }
   }, [chat])
 
   const renderedChat = chat.map((msg, index) => (
@@ -47,7 +46,7 @@ export function Chat() {
   return (
     <View style={styles.chatContainer}>
       <View style={styles.renderedChat}>{renderedChat}</View>
-      {/* <Controller
+      <Controller
         control={control}
         rules={{
           required: true,
@@ -63,14 +62,7 @@ export function Chat() {
         name="message"
         defaultValue=""
       />
-      <Button title="Send Message" onPress={handleSubmit(onSubmit)} /> */}
-      <TextInput
-        style={styles.input}
-        autoCorrect={false}
-        value={message}
-        onSubmitEditing={() => submit()}
-        onChangeText={(message) => setMessage(message)}
-      />
+      <Button title="Send Message" onPress={handleSubmit(onSubmit)} />
     </View>
   )
 }
@@ -98,7 +90,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'azure',
   },
   chatMessage: {
-    width: 'fit-content',
     maxWidth: '100%',
     backgroundColor: '#1bc2f5',
     paddingHorizontal: 8,
