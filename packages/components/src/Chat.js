@@ -74,7 +74,7 @@ export function Chat() {
 
 const styles = StyleSheet.create({
   chatContainer: {
-    width: '100%',
+    width: 300,
     // maxWidth: 300,
     marginTop: 30,
   },
